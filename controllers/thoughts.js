@@ -68,17 +68,17 @@ const deleteThoughtById = async (req, res) => {
 const addReaction = async (req, res) => {
   try {
     const thoughtData = await Thought.findByIdAndUpdate(
-      req.params.thoughtId,
+      {_id:req.params.thoughtId},
       {
         $addToSet: {
-          reactions: req.params.reactionId,
+          reactions: req.body,
         },
       },
       {
         new: true,
       }
     );
-
+      console.log('hello ')
     // Update the corresponding user's reactions array
     await User.findByIdAndUpdate(req.body.userId, { $push: { reactions: req.params.reactionId } });
 
@@ -91,19 +91,17 @@ const addReaction = async (req, res) => {
 
 const deleteReaction = async (req, res) => {
   try {
-    const thoughtData = await Thought.findByIdAndUpdate(
-      req.params.thoughtId,
+    const thoughtData = await Thought.findByIdAndDelete(
+      {_id:req.params.thoughtId},
       {
         $pull: {
-          reactions: req.params.reactionId,
+          reactions: req.body,
         },
       },
       {
         new: true,
       }
     );
-
-    await User.findByIdAndUpdate(req.body.userId, { $pull: { reactions: req.params.reactionId } });
 
     res.json(thoughtData);
   } catch (err) {
