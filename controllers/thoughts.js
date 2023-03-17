@@ -91,11 +91,13 @@ const addReaction = async (req, res) => {
 
 const deleteReaction = async (req, res) => {
   try {
-    const thoughtData = await Thought.findByIdAndDelete(
+    const thoughtData = await Thought.findByIdAndUpdate(
       {_id:req.params.thoughtId},
       {
         $pull: {
-          reactions: req.body,
+          reactions: {
+            reactionId:req.params.reactionId
+          },
         },
       },
       {
